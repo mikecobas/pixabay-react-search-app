@@ -1,13 +1,33 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Formulario from './components/Formulario'
 
 
 function App() {
+  const [ busqueda, guardarBusqueda] = useState('');
+
+
+  useEffect(()=>{
+   const consultarApi = async () =>{
+    if(busqueda==='') return;
+    const imagenPorPagina = 30;
+    const APIKEY = '1217224-9d7b4086ebabcee8a4c511c41';
+    const url = `https://pixabay.com/api/?key=${APIKEY}&q=${busqueda}&per_page=${imagenPorPagina}`;
+
+    const respuesta = await fetch(url)
+    const resultado = await respuesta.json();
+    guardarBusqueda(resultado.hits)
+
+   }
+   consultarApi()
+
+  }, [busqueda])
   return (
     <div className="container">
     <div className="jumbotron">
       <p className="lead text-center">Buscador de imagenes</p>
-      <Formulario />
+      <Formulario
+        guardarBusqueda={guardarBusqueda}
+       />
     </div>
     </div>
   );
